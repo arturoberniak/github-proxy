@@ -1,3 +1,7 @@
 spring:
   application:
     name: github-proxy
+
+github:
+  api:
+    base-url=https://api.github.com
