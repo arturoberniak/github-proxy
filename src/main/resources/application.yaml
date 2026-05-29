@@ -4,4 +4,4 @@ spring:
 
 github:
   api:
-    base-url=https://api.github.com
+    base-url: https://api.github.com
