@@ -23,6 +23,7 @@ dependencies {
 	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 
 	implementation("org.springframework.boot:spring-boot-starter-web")
+	testImplementation("org.wiremock.integrations:wiremock-spring-boot:4.0.9")
 }
 
 tasks.withType<Test> {
