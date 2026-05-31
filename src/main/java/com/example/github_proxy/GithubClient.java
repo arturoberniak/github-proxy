@@ -4,7 +4,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
-import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestClient;
 
 import java.util.List;
@@ -29,17 +28,16 @@ class GithubClient {
     }
 
     List<GithubRepositoryDto> fetchRepositories(String username) {
-        try {
-            return restClient.get()
-                    .uri("/users/{username}/repos", username)
-                    .retrieve()
-                    .body(REPO_LIST_TYPE);
-        } catch (HttpClientErrorException ex) {
-            if (ex.getStatusCode() == HttpStatus.NOT_FOUND) {
-                throw new GithubUserNotFoundException(username);
-            }
-            throw ex;
-        }
+        return restClient.get()
+                .uri("/users/{username}/repos", username)
+                .retrieve()
+                .onStatus(
+                        status -> status == HttpStatus.NOT_FOUND,
+                        (request, response) -> {
+                            throw new GithubUserNotFoundException(username);
+                        }
+                )
+                .body(REPO_LIST_TYPE);
     }
 
     List<GithubBranchDto> fetchBranches(String username, String repoName) {
